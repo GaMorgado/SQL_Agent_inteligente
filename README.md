@@ -92,7 +92,7 @@ Esta é a forma recomendada para garantir um ambiente consistente.
     python main.py
     ```
 
-## :construction_site: Banco de Dados
+## :rocket: Banco de Dados
 
 * O projeto utiliza um banco de dados relacional, configurado para PostgreSQL através da variável de ambiente `SQLALCHEMY_DATABASE_URL` (ou similar, para a aplicação) e `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD` (para o container Docker).
 * O script `init-db.sql` contém a estrutura inicial do banco de dados e, possivelmente, dados de exemplo.
