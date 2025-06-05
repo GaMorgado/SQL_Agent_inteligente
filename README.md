@@ -133,7 +133,7 @@ Esta é a forma recomendada para garantir um ambiente consistente.
     docker-compose down -v
     ```
 
-## :tools: Tecnologias Utilizadas (Exemplos)
+## :wrench: Tecnologias Utilizadas (Exemplos)
 
 * **Python**
 * **Docker & Docker Compose**
