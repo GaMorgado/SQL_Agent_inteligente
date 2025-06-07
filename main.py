@@ -84,26 +84,19 @@ workflow.add_conditional_edges("response_formatting_agent", verify_error_respons
 workflow.add_edge("error_handler", END)
 
 # Função executar_fluxo_do_agente (permanece a mesma)
-def executar_fluxo_do_agente(compiled_app, thread_id_input_func=input):
+def executar_fluxo_do_agente(compiled_app, thread_id):
     print("Iniciando o fluxo do Agente SQL Inteligente...")
 
     estado_inicial_input = {}
     try:
-        thread_id = thread_id_input_func("Insira o seu nome (ou ID da thread) para futuras consultas: ")
         if not thread_id:
             print("ID da thread não pode ser vazio. Abortando.")
             return
         config = {"configurable": {"thread_id": thread_id}}
         resultado_final_do_estado = compiled_app.invoke(estado_inicial_input, config=config)
         print("\n--- FLUXO CONCLUÍDO --- ")
-        print(resultado_final_do_estado)
         print(f"pergunta do usuario: -{resultado_final_do_estado['user_question']}")
         print(f"resposta do assistente: -{resultado_final_do_estado['formatted_answer']}\n")
-
-        if len(resultado_final_do_estado['chat_history']) > 0:
-            print("histórico de chat:")
-            for n in resultado_final_do_estado['chat_history']:
-                print(f"{n}")
 
     except Exception as e:
         print(f"\n Ocorreu uma exceção não tratada ao executar o grafo principal: {e}")
@@ -124,5 +117,12 @@ if __name__ == "__main__":
             
             app = workflow.compile(checkpointer=checkpointer)
 
-            
-            executar_fluxo_do_agente(app, input)
+            thread_id = input("Insira o seu nome (ou ID da thread) para futuras consultas: ")
+            user_response = "sim"
+            while user_response.lower() == "sim":
+                executar_fluxo_do_agente(app, thread_id)
+                user_response = input("\nDeseja continuar perguntando? (sim/não): ")
+                while user_response.lower() != "sim" and user_response.lower() != "não" and user_response.lower() != "nao":
+                    print("Resposta inválida, tente novamente")
+                    user_response = input("Deseja continuar perguntando? (sim/não): ")
+                

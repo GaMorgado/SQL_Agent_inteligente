@@ -1,6 +1,7 @@
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage, AIMessage
 from langchain.prompts import load_prompt
+from handler.token_counter import token_controller_for_chat_history
 from typing import Dict
 from handler.config import ExecutionState
 import os
@@ -10,6 +11,10 @@ def InputParseAgent(state: ExecutionState) -> Dict[str, str]:
     user_input = input("Bem vindo ao sistema de verificação de transações, faça sua pergunta: ")
 
     novo_historico = state.chat_history + [f"Utilizador: {user_input.strip()}"]
+
+    controlled_chat_history = token_controller_for_chat_history(novo_historico)
+
+    formatted_history_str = "\n".join(controlled_chat_history)
 
     #constroi o caminho do prompt 
     try:
@@ -22,7 +27,7 @@ def InputParseAgent(state: ExecutionState) -> Dict[str, str]:
     #carrega o caminho do prompt
     try:
         input_prompt = load_prompt(input_prompt_path, encoding="utf-8")
-        formatted_input_parse_prompt = input_prompt.format(user_input=user_input)
+        formatted_input_parse_prompt = input_prompt.format(user_input=user_input, chat_history=formatted_history_str)
     except Exception as e:
         return {'error': f'Não foi possível carregar o prompt para melhorar a pergunta do usuario, erro: {e}'}
 

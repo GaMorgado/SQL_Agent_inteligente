@@ -2,6 +2,7 @@ from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage, AIMessage
 from langchain.prompts import load_prompt
 from handler.config import ExecutionState
+from handler.token_counter import token_controller_for_chat_history
 from typing import Dict
 import os
 import json
@@ -11,9 +12,11 @@ def ResponseAgent(state:ExecutionState) -> Dict[str, str]:
 
     result_query_obj = state.db_result
 
-    chat_history_str = ""
-    for n in state.chat_history:
-        chat_history_str += f"{n}\n"
+    chat_history = state.chat_history
+
+    controlled_chat_history = token_controller_for_chat_history(chat_history)
+
+    chat_history_str = "\n".join(controlled_chat_history)
 
     if not result_query_obj:
         return {'error': "Não houve resultados para apresentar."}
@@ -29,7 +32,6 @@ def ResponseAgent(state:ExecutionState) -> Dict[str, str]:
         current_dir = os.path.dirname(os.path.abspath(__file__))
         parent_dir = os.path.dirname(current_dir)
         ResponseAgent_prompt_path = os.path.join(parent_dir, "prompts", "Response_agent_prompt.json")
-        
     except Exception as e:
         return {'error': f'Erro ao construir o caminho do prompt, erro: {e}'}
 
