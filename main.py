@@ -4,7 +4,9 @@ import os
 import traceback
 from handler.config import ExecutionState 
 from handler.db_connection import engine   
+from dotenv import load_dotenv
 
+load_dotenv()
 
 checkpointer_db_url = os.getenv("CHECKPOINTER_DATABASE_URL")
 print(checkpointer_db_url)
@@ -94,7 +96,7 @@ def executar_fluxo_do_agente(compiled_app, thread_id_input_func=input):
         config = {"configurable": {"thread_id": thread_id}}
         resultado_final_do_estado = compiled_app.invoke(estado_inicial_input, config=config)
         print("\n--- FLUXO CONCLUÍDO --- ")
-
+        print(resultado_final_do_estado)
         print(f"pergunta do usuario: -{resultado_final_do_estado['user_question']}")
         print(f"resposta do assistente: -{resultado_final_do_estado['formatted_answer']}\n")
 

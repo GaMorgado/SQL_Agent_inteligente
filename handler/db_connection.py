@@ -1,13 +1,9 @@
 import sqlalchemy as db
 import os
-from dotenv import load_dotenv
-
-# É importante chamar load_dotenv() antes de tentar acessar as variáveis de ambiente
-load_dotenv()
 
 sqlalchemy_db_url = os.getenv("SQLALCHEMY_DATABASE_URL")
-engine = None
 
+engine = None
 if sqlalchemy_db_url:
     try:
         engine = db.create_engine(sqlalchemy_db_url)
